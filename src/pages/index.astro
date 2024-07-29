@@ -1,0 +1,31 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import TicketInfo from "../components/TicketInfo.astro";
+import { SITE_TITLE, SITE_DESCRIPTION, API_ENDPOINT } from "../consts";
+import TicketUpload from "../components/TicketUpload.tsx";
+import { isTemplateSpan } from "typescript";
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body class="w-full max-w-screen-md mx-auto my-4 dark:bg-neutral-800 dark:text-neutral-300 transition-colors duration-300" >
+    <Header />
+    <main class="flex flex-col justify-center">
+      <div class="px-4 md:px-16 flex flex-col gap-4 md:my-10">
+        <h1 class="text-2xl md:text-5xl w-full">🛒 Convierte tu Ticket de Mercadona en un CSV</h1>
+        <p class="w-full text-justify text-base md:text-lg">
+          Sube el pdf de los tickets digitales de Mercadona y obtén un CSV con los productos, precios y cantidades. ¡Así de fácil!
+        </p>
+
+        <div class="ticket-upload-container p-8 border-2 border-green-500 rounded-lg bg-gray-100 shadow-lg mt-4">
+          <TicketUpload client:load api_url={API_ENDPOINT} />
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </body>
+</html>

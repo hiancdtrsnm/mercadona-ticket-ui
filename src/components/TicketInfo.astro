@@ -1,0 +1,99 @@
+---
+interface Product {
+  producto: string;
+  precio: number;
+  cantidad: number;
+  timestamp: string;
+}
+
+interface Props {
+  items: Product[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="flex flex-col gap-4">
+  <table class="w-full border-collapse border border-neutral-300 hidden md:table">
+    <thead>
+      <tr>
+        <th class="border px-4 py-2">Producto</th>
+        <th class="border px-4 py-2">Precio</th>
+        <th class="border px-4 py-2">Cantidad</th>
+        <th class="border px-4 py-2">Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      {items.map((item) => (
+        <tr>
+          <td class="border px-4 py-2">{item.producto}</td>
+          <td class="border px-4 py-2">{item.precio}</td>
+          <td class="border px-4 py-2">{item.cantidad}</td>
+          <td class="border px-4 py-2">{item.timestamp}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+
+  <div class="flex flex-col gap-4 md:hidden datatable">
+    {items.map((item) => (
+      <div class="border border-neutral-300 p-4">
+        <div class="mb-2">
+          <span class="font-semibold">Producto: </span>
+          <span>{item.producto}</span>
+        </div>
+        <div class="mb-2">
+          <span class="font-semibold">Precio: </span>
+          <span>{item.precio}</span>
+        </div>
+        <div class="mb-2">
+          <span class="font-semibold">Cantidad: </span>
+          <span>{item.cantidad}</span>
+        </div>
+        <div class="mb-2">
+          <span class="font-semibold">Fecha: </span>
+          <span>{item.timestamp}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="flex flex-col gap-4 px-4 md:px-16">
+    <button id="download-csv-btn" class="p-2 bg-blue-500 text-white rounded-md">Descargar CSV</button>
+  </div>
+</div>
+
+<style>
+  @media (max-width: 640px) {
+    .lg\\:hidden {
+      display: block !important;
+    }
+    .hidden {
+      display: none !important;
+    }
+  }
+</style>
+<script>
+  // @ts-ignore
+    document.getElementById('download-csv-btn').addEventListener('click', function() {
+        const datatable = document.querySelector('.datatable');
+        // @ts-ignore
+        const items = Array.from(datatable.children).map((row) => ({
+            producto: row.children[0].children[1].textContent,
+            precio: row.children[1].children[1].textContent,
+            cantidad: row.children[2].children[1].textContent,
+            timestamp: row.children[3].children[1].textContent,
+        }));
+
+        const csv = 'Producto,Precio,Cantidad,Fecha\n' + items.map((item) => `${item.producto},${item.precio},${item.cantidad},${item.timestamp}`).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `ticket-mercadona-${items[0].timestamp}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+
+</script>
